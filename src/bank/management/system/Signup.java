@@ -4,11 +4,15 @@ package bank.management.system;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Random;
+import javax.swing.JOptionPane;
 
-public class Signup extends JFrame {
+public class Signup extends JFrame implements ActionListener {
     JRadioButton r1, r2, M1, M2, M3;
 
     JButton next;
@@ -25,7 +29,7 @@ public class Signup extends JFrame {
 
     long first4 = (ran.nextLong() % 9000L) + 1000L;
 
-    String firts = " " + Math.abs(first4);
+    String first = " " + Math.abs(first4);
 
 
     Signup(){
@@ -53,7 +57,7 @@ public class Signup extends JFrame {
 
 
 
-        JLabel label1 = new JLabel("APPLICATION FORM No: " + firts);
+        JLabel label1 = new JLabel("APPLICATION FORM No: " + first);
         label1.setBounds(160, 20, 600, 40);
         label1.setFont(new Font("Ralway", Font.BOLD, 38));
         panel.add(label1);
@@ -222,7 +226,7 @@ public class Signup extends JFrame {
         next.setBackground(Color.BLACK);
         next.setForeground(Color.WHITE);
         next.setBounds(620, 660, 80, 30);
-        //next.addActionListener(this);
+        next.addActionListener(this);
         panel.add(next);
 
         JScrollPane scrollPane = new JScrollPane(panel);
@@ -238,6 +242,57 @@ public class Signup extends JFrame {
         setSize(850, 800);
         setLocation(230, 10);
         setVisible(true);
+
+
+    }
+
+
+    @Override
+    public void actionPerformed(ActionEvent e){
+        String formno = first;
+        String name = textName.getText();
+        String fname = textFName.getText();
+        String dob = new SimpleDateFormat("dd/MM/yyyy").format(dateChooser.getValue());
+        String gender = null;
+        if(r1.isSelected()){
+            gender = "Homme";
+
+        }else if (r2.isSelected()){
+            gender = "Femme";
+        }
+
+        String email = textEmail.getText();
+        String marital = null;
+        if(M1.isSelected()){
+            marital = "Marié";
+
+        }else if (M2.isSelected()){
+            marital = "Célibataire";
+
+        }else if (M3.isSelected()){
+            marital = "Autres";
+        }
+
+        
+        String address = textAdd.getText();
+        String city = textcity.getText();
+        String pincode = textpin.getText();
+
+
+        try{
+            if(textName.getText().equals("")){
+                JOptionPane.showMessageDialog(null, "Remplissez tous les champs");
+            }else{
+                Conn con1 = new Conn();
+                String q = "insert into signup values('"+formno+"', '"+name+"', '"+fname+"', '"+dob+"', '"+gender+"', '"+email+"', '"+marital+"', '"+address+"', '"+city+"', '"+pincode+"')";
+                con1.statement.executeUpdate(q);
+                new Signup2(first);
+                setVisible(false);
+            }
+
+        }catch(Exception E){
+            E.printStackTrace();
+        }
 
 
     }
